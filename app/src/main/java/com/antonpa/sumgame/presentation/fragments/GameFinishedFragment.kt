@@ -1,6 +1,5 @@
-package com.antonpa.sumgame.presentation
+package com.antonpa.sumgame.presentation.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.antonpa.sumgame.databinding.FragmentGameFinishedBinding
 import com.antonpa.sumgame.domain.entities.GameResult
-import java.lang.RuntimeException
 
 
 class GameFinishedFragment : Fragment() {
@@ -37,11 +35,14 @@ class GameFinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(object : OnBackPressedCallback(true){
+        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true){
             override fun handleOnBackPressed() {
-                onBackPressed()
+                runNewGame()
             }
         })
+        binding.buttonRetry.setOnClickListener {
+            runNewGame()
+        }
     }
 
     override fun onDestroy() {
@@ -50,10 +51,12 @@ class GameFinishedFragment : Fragment() {
     }
 
     private fun getCorrectArgs() {
-        gameResult = requireArguments().getSerializable(KEY_GAME_RESULT) as GameResult
+        requireArguments().getParcelable<GameResult>(KEY_GAME_RESULT)?.let {
+            gameResult = it
+        }
     }
 
-    private fun onBackPressed() {
+    private fun runNewGame() {
         requireActivity().supportFragmentManager.popBackStack(
             GameFragment.NAME,
             FragmentManager.POP_BACK_STACK_INCLUSIVE
@@ -67,7 +70,7 @@ class GameFinishedFragment : Fragment() {
         fun getNewInstance(gameResult: GameResult): GameFinishedFragment =
             GameFinishedFragment().apply {
                 arguments = Bundle().apply {
-                    putSerializable(KEY_GAME_RESULT, gameResult)
+                    putParcelable(KEY_GAME_RESULT, gameResult)
                 }
             }
     }

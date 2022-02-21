@@ -1,4 +1,4 @@
-package com.antonpa.sumgame.presentation
+package com.antonpa.sumgame.presentation.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

@@ -21,8 +21,8 @@ object GameRepositoryImpl: GameRepository {
         termOptionsList.add(rightAnswer)
         while (termOptionsList.size < countOfOptions){
             termOptionsList.add(Random.nextInt(
-                min(MIN_TERM_VALUE, rightAnswer - countOfOptions),
-                max(maxSumValue, rightAnswer + countOfOptions)
+                max(MIN_TERM_VALUE, rightAnswer - countOfOptions),
+                min(maxSumValue, rightAnswer + countOfOptions)
             ))
         }
         return GameGoal(sum, visibleTerm, termOptionsList.toList())

@@ -8,6 +8,6 @@ class GetGameSettingUseCase(
     private val repository: GameRepository
 ) {
 
-    private operator fun invoke(gameLevel: GameLevel): GameSettings =
+    operator fun invoke(gameLevel: GameLevel): GameSettings =
         repository.getGameSetting(gameLevel)
 }

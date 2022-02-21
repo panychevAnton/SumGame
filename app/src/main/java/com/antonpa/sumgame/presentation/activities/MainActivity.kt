@@ -1,4 +1,4 @@
-package com.antonpa.sumgame.presentation
+package com.antonpa.sumgame.presentation.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
