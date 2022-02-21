@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import com.antonpa.sumgame.R
 import com.antonpa.sumgame.databinding.FragmentGameFinishedBinding
 import com.antonpa.sumgame.domain.entities.GameResult
 
@@ -35,14 +36,50 @@ class GameFinishedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object : OnBackPressedCallback(true){
-            override fun handleOnBackPressed() {
-                runNewGame()
-            }
-        })
+        setDataOnView()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    runNewGame()
+                }
+            })
         binding.buttonRetry.setOnClickListener {
             runNewGame()
         }
+    }
+
+    private fun setDataOnView() {
+        with(binding) {
+            emojiResult.setImageResource(
+                if (gameResult.isWinner) R.drawable.ic_smile
+                else R.drawable.ic_sad
+            )
+            tvRequiredAnswers.text = String.format(
+                getString(R.string.required_score),
+                gameResult.gameSettings.minCountOfRightAnswers
+            )
+            tvScoreAnswers.text = String.format(
+                getString(R.string.score_answers),
+                gameResult.countOfRightAnswers
+            )
+            tvRequiredPercentage.text = String.format(
+                getString(R.string.required_percentage),
+                gameResult.gameSettings.minPercentOfRightAnswers
+            )
+
+            tvScorePercentage.text = String.format(
+                getString(R.string.score_percentage),
+                getPercentOfCorrectAnswers()
+            )
+        }
+    }
+
+    private fun getPercentOfCorrectAnswers() = with(gameResult) {
+        if (countOfAllAnswers == 0)
+            0
+        else
+            ((countOfRightAnswers / countOfAllAnswers.toDouble()) * 100).toInt()
     }
 
     override fun onDestroy() {

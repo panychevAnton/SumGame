@@ -15,18 +15,21 @@ import com.antonpa.sumgame.databinding.FragmentGameBinding
 import com.antonpa.sumgame.domain.entities.GameLevel
 import com.antonpa.sumgame.domain.entities.GameResult
 import com.antonpa.sumgame.presentation.viewmodels.GameFragmentViewModel
+import com.antonpa.sumgame.presentation.viewmodels.GameFragmentViewModelFactory
 import java.lang.RuntimeException
 
 
 class GameFragment : Fragment() {
 
     private lateinit var gameLevel: GameLevel
-    private val viewModel by lazy {
-        ViewModelProvider(
-            this,
-            AndroidViewModelFactory.getInstance(requireActivity().application)
-        )[GameFragmentViewModel::class.java]
+
+    private val viewModelFactory by lazy {
+        GameFragmentViewModelFactory(requireActivity().application, gameLevel)
     }
+    private val viewModel by lazy {
+        ViewModelProvider(this, viewModelFactory)[GameFragmentViewModel::class.java]
+    }
+
     private val tvOptionsList by lazy {
         mutableListOf<TextView>().apply {
             add(binding.tvOption1)
@@ -59,7 +62,6 @@ class GameFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         observeLiveData()
         setOnClockListenersToOptions()
-        viewModel.startGame(gameLevel)
     }
 
     private fun setOnClockListenersToOptions() {

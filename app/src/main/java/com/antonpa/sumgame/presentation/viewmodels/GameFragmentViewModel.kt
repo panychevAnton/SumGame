@@ -5,6 +5,7 @@ import android.os.CountDownTimer
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.antonpa.sumgame.R
 import com.antonpa.sumgame.data.GameRepositoryImpl
 import com.antonpa.sumgame.domain.entities.GameGoal
@@ -15,11 +16,11 @@ import com.antonpa.sumgame.domain.usecases.GetGameGoalUseCase
 import com.antonpa.sumgame.domain.usecases.GetGameSettingUseCase
 
 class GameFragmentViewModel(
-    application: Application
-) : AndroidViewModel(application) {
+    private val application: Application,
+    private val gameLevel: GameLevel
+) : ViewModel() {
 
     private val repository = GameRepositoryImpl
-    private val context = application
     private lateinit var gameSettings: GameSettings
     private var timer: CountDownTimer? = null
 
@@ -61,7 +62,7 @@ class GameFragmentViewModel(
     private var counterOfCorrectAnswers = 0
     private var counterOfAllAnswers = 0
 
-    fun startGame(gameLevel: GameLevel) {
+    init {
         getGameSettings(gameLevel)
         runGameTimer()
         updateGameProgress()
@@ -75,10 +76,10 @@ class GameFragmentViewModel(
     }
 
     private fun updateGameProgress() {
-        val percent = calculatePercentOfCorrectAnswers()
+        val percent = getPercentOfCorrectAnswers()
         _correctAnswersPercentLiveData.value = percent
         _gameAnswersInfoLiveData.value = String.format(
-            context.resources.getString(R.string.progress_answers),
+            application.resources.getString(R.string.progress_answers),
             counterOfCorrectAnswers,
             gameSettings.minCountOfRightAnswers
         )
@@ -88,7 +89,7 @@ class GameFragmentViewModel(
             percent >= gameSettings.minPercentOfRightAnswers
     }
 
-    private fun calculatePercentOfCorrectAnswers() =
+    private fun getPercentOfCorrectAnswers() =
         if (counterOfAllAnswers == 0)
             0
         else
