@@ -17,7 +17,7 @@ import com.antonpa.sumgame.domain.usecases.GetGameSettingUseCase
 
 class GameFragmentViewModel(
     private val application: Application,
-    private val gameLevel: GameLevel
+    gameLevel: GameLevel
 ) : ViewModel() {
 
     private val repository = GameRepositoryImpl
